@@ -1,0 +1,54 @@
+version: "3.7"
+
+services:
+  database:
+    container_name: restaurant-postgres
+    restart: always
+    hostname: database
+    image: "postgres:12.15-alpine"
+    expose:
+      - "3432"
+    ports:
+      - "5438:5432"
+    environment:
+      - POSTGRES_DB=restaurant
+      - POSTGRES_USER=restaurant
+      - POSTGRES_PASSWORD=restaurant
+    volumes:
+      - restaurant_pgsql_data:/var/lib/postgresql/data
+    networks:
+      - restaurant-app
+    privileged: false
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - NET_RAW
+
+  backend:
+    image: "restaurant-backend"
+    build:
+      dockerfile: docker/Dockerfile
+      context: ../
+    depends_on:
+      - database
+    container_name: restaurant-backend
+    restart: always
+    environment:
+      - TZ=Europe/Warsaw
+    expose:
+      - "8080"
+    ports:
+      - "8088:8080"
+    networks:
+      - restaurant-app
+    privileged: false
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - NET_RAW
+
+networks:
+  restaurant-app:
+
+volumes:
+  restaurant_pgsql_data:
