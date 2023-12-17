@@ -80,16 +80,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getJwtToken(HttpServletRequest request, HttpServletResponse response) {
-        String bearerToken = request.getHeader("Authorization");
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
-    }
-
     static class JwtAuthenticationException extends Exception {
         public JwtAuthenticationException(String message) {
             super(message);
