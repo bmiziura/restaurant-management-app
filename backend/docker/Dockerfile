@@ -1,4 +1,4 @@
-FROM amd64/eclipse-temurin:11-jre-alpine
+FROM amd64/eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY target/*.jar restaurant-backend.jar
 EXPOSE 8080
