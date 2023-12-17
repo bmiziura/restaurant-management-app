@@ -8,8 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,13 +29,14 @@ public class SecurityConfig {
             "/v3/api-docs/**"
     };
 
-    private static final String[] ALLOWED_POST_PATHS = {
+    private static final String[] ANONYMOUS_POST_PATHS = {
             "/api/auth/login",
             "/api/auth/register"
     };
 
     private static final String[] AUTHORIZED_GET_PATHS = {
-            "/api/auth/me"
+            "/api/auth/me",
+            "/api/auth/logout"
     };
 
     @Bean
@@ -50,7 +49,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers(HttpMethod.GET, SWAGGER_PATHS).permitAll();
-            authorize.requestMatchers(HttpMethod.POST, ALLOWED_POST_PATHS).permitAll();
+            authorize.requestMatchers(HttpMethod.POST, ANONYMOUS_POST_PATHS).anonymous();
             authorize.requestMatchers(HttpMethod.GET, AUTHORIZED_GET_PATHS).authenticated();
 
             authorize.anyRequest().denyAll();
