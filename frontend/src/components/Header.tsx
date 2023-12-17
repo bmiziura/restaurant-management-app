@@ -4,18 +4,16 @@ function Header() {
   return (
     <header className="h-20 container flex justify-between items-center">
       <h1>Restaurant Management</h1>
-      <nav>
-        <ul className="flex text-lg gap-x-4 items-center">
+      <nav className="flex gap-x-4">
+        <ul className="text-lg gap-x-4 items-center hidden md:flex">
           <li>Cennik</li>
           <li>Opinie</li>
           <li>O nas</li>
           <li>Kontakt</li>
-          <li>
-            <Button className="text-sm font-bold uppercase bg-slate-800 text-slate-100">
-              Zaloguj
-            </Button>
-          </li>
         </ul>
+        <Button className="text-sm font-bold uppercase bg-slate-800 text-slate-100">
+          Zaloguj
+        </Button>
       </nav>
     </header>
   )
