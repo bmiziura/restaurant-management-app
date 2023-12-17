@@ -7,9 +7,9 @@ services:
     hostname: database
     image: "postgres:12.15-alpine"
     expose:
-      - "3432"
+      - "5432"
     ports:
-      - "5438:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_DB=restaurant
       - POSTGRES_USER=restaurant
@@ -38,7 +38,7 @@ services:
     expose:
       - "8080"
     ports:
-      - "8088:8080"
+      - "8080:8080"
     networks:
       - restaurant-app
     privileged: false
