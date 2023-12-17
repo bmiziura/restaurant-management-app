@@ -35,7 +35,10 @@ public class SecurityConfig {
     };
 
     private static final String[] AUTHORIZED_GET_PATHS = {
-            "/api/auth/me",
+            "/api/auth/me"
+    };
+
+    private static final String[] AUTHORIZED_POST_PATHS = {
             "/api/auth/logout"
     };
 
@@ -51,6 +54,7 @@ public class SecurityConfig {
             authorize.requestMatchers(HttpMethod.GET, SWAGGER_PATHS).permitAll();
             authorize.requestMatchers(HttpMethod.POST, ANONYMOUS_POST_PATHS).anonymous();
             authorize.requestMatchers(HttpMethod.GET, AUTHORIZED_GET_PATHS).authenticated();
+            authorize.requestMatchers(HttpMethod.POST, AUTHORIZED_POST_PATHS).authenticated();
 
             authorize.anyRequest().denyAll();
         });
