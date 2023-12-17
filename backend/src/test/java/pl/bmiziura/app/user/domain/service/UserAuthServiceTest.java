@@ -5,17 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.bmiziura.app.infrastructure.config.security.JwtTokenProvider;
+import pl.bmiziura.app.infrastructure.config.security.providers.CookieProvider;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 import pl.bmiziura.app.user.endpoint.mapper.AuthRequestMapper;
 import pl.bmiziura.app.user.endpoint.mapper.AuthResponseMapper;
 import pl.bmiziura.app.user.endpoint.model.UserLoginRequest;
-import pl.bmiziura.app.user.endpoint.model.UserLoginResponse;
 import pl.bmiziura.app.user.endpoint.model.UserRegisterRequest;
-import pl.bmiziura.app.user.endpoint.model.UserRegisterResponse;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -28,13 +27,13 @@ class UserAuthServiceTest {
     @Mock
     private UserService userService;
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
-    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private AuthResponseMapper authResponseMapper;
     @Mock
     private AuthRequestMapper authRequestMapper;
+    @Mock
+    private CookieProvider cookieProvider;
 
     private UserAuthService underTest;
 
@@ -42,10 +41,10 @@ class UserAuthServiceTest {
     void setUp() {
         underTest = spy(new UserAuthService(
                 userService,
-                jwtTokenProvider,
                 passwordEncoder,
                 authResponseMapper,
-                authRequestMapper
+                authRequestMapper,
+                cookieProvider
         ));
     }
 
@@ -54,7 +53,7 @@ class UserAuthServiceTest {
         // given
         var request = new UserLoginRequest(TEST_EMAIL, TEST_PASSWORD);
         var user = prepareUserAccount();
-        var jwtToken = "token";
+        var cookie = ResponseCookie.from("refreshToken").build();
 
         when(userService.getUser(request.getEmail()))
                 .thenReturn(user);
@@ -62,8 +61,8 @@ class UserAuthServiceTest {
         when(passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .thenReturn(true);
 
-        when(jwtTokenProvider.createToken(user))
-                .thenReturn(jwtToken);
+        when(cookieProvider.createRefreshCookie(user))
+                .thenReturn(cookie);
 
         // when
         var result = assertDoesNotThrow(() -> underTest.loginUser(request));
@@ -71,10 +70,9 @@ class UserAuthServiceTest {
         // then
         verify(userService).getUser(request.getEmail());
         verify(passwordEncoder).matches(request.getPassword(), user.getPassword());
-        verify(jwtTokenProvider).createToken(user);
+        verify(cookieProvider).createRefreshCookie(user);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getJwtToken()).isEqualTo(jwtToken);
+        assertThat(result).isEqualTo(cookie);
     }
 
     @Test
@@ -95,7 +93,7 @@ class UserAuthServiceTest {
                 "User not found!");
 
         // then
-        verify(jwtTokenProvider, never()).createToken(user);
+        verify(cookieProvider, never()).createRefreshCookie(user);
     }
 
     @Test
@@ -103,15 +101,11 @@ class UserAuthServiceTest {
         // given
         var request = new UserRegisterRequest(TEST_EMAIL, TEST_PASSWORD);
         var user = prepareUserAccount();
-        var jwtToken = "token";
+        var cookie = ResponseCookie.from("refreshToken").build();
         var loginRequest = new UserLoginRequest(request.getEmail(), request.getPassword());
-        var response = new UserRegisterResponse(jwtToken);
 
         when(authRequestMapper.toUserLoginRequest(request))
                 .thenReturn(loginRequest);
-
-        when(authResponseMapper.toUserRegisterResponse(any(UserLoginResponse.class)))
-                .thenReturn(response);
 
         when(userService.getUser(request.getEmail()))
                 .thenReturn(user);
@@ -119,8 +113,8 @@ class UserAuthServiceTest {
         when(passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .thenReturn(true);
 
-        when(jwtTokenProvider.createToken(user))
-                .thenReturn(jwtToken);
+        when(cookieProvider.createRefreshCookie(user))
+                .thenReturn(cookie);
 
         // when
         var result = assertDoesNotThrow(() -> underTest.registerUser(request));
@@ -128,11 +122,9 @@ class UserAuthServiceTest {
         // then
         verify(userService).createUser(request.getEmail(), request.getPassword());
         verify(authRequestMapper).toUserLoginRequest(request);
-        verify(authResponseMapper).toUserRegisterResponse(any(UserLoginResponse.class));
         verify(underTest).loginUser(loginRequest);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getJwtToken()).isEqualTo(jwtToken);
+        assertThat(result).isEqualTo(cookie);
     }
 
     private UserAccount prepareUserAccount() {

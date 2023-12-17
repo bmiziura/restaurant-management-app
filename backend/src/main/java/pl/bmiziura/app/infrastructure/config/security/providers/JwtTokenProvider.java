@@ -1,10 +1,8 @@
-package pl.bmiziura.app.infrastructure.config.security;
+package pl.bmiziura.app.infrastructure.config.security.providers;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import pl.bmiziura.app.infrastructure.config.security.properties.JwtProperties;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 import pl.bmiziura.app.user.domain.model.UserRole;
 
@@ -12,33 +10,32 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
-
-    private final JwtProperties jwtProperties;
+    private final long validityTime;
+    private final String secret;
 
     public String createToken(UserAccount user) {
         var createTime = LocalDateTime.now();
-        var expiryDate = createTime.plusMinutes(jwtProperties.getValidityTime());
+        var expiryDate = createTime.plusSeconds(validityTime);
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim("roles", user.getRoles().stream().map(UserRole::toString).collect(Collectors.toSet()))
                 .setIssuedAt(Timestamp.valueOf(createTime))
                 .setExpiration(Timestamp.valueOf(expiryDate))
-                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
     public Claims getClaims(String token) {
-        return Jwts.parser().setSigningKey(jwtProperties.getSecret()).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtProperties.getSecret()).parse(token);
+            Jwts.parser().setSigningKey(secret).parse(token);
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT Signature", ex);

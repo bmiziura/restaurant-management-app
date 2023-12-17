@@ -8,10 +8,14 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+
 security:
-  jwt:
-    validity-time: 60
-    secret: secret123dasd!
+  refresh-token:
+    validity-time: 259200
+    secret: secret-refresh123!
+  access-token:
+    validity-time: 1800
+    secret: secret-access123!
   cors:
     allowed-methods: GET,POST,PUT.PATCH,DELETE,ORIGIN
     allowed-headers: "*"
