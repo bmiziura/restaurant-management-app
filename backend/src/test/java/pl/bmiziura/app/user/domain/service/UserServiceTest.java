@@ -180,6 +180,7 @@ class UserServiceTest {
     @Test
     void shouldCreateUser() throws MessagingException, TemplateException, IOException {
         // given
+        var entity = prepareEntity();
         var encodedPassword = "encodedPassword";
 
         when(userAccountRepository.existsByEmail(USER_EMAIL))
@@ -187,6 +188,15 @@ class UserServiceTest {
 
         when(passwordEncoder.encode(USER_PASSWORD))
                 .thenReturn(encodedPassword);
+
+        when(userAccountRepository.save(any(UserAccountEntity.class)))
+                .thenReturn(entity);
+
+        when(userAccountRepository.findById(entity.getId()))
+                .thenReturn(Optional.of(entity));
+
+        when(userAccountMapper.toUserAccount(entity))
+                .thenReturn(prepareUser());
 
         // when
         assertDoesNotThrow(() -> underTest.createUser(USER_EMAIL, USER_PASSWORD));
@@ -209,7 +219,7 @@ class UserServiceTest {
         assertThat(user.getRoles().size()).isEqualTo(1);
         assertThat(user.getRoles().contains(UserRole.USER)).isTrue();
         assertThat(mail).isInstanceOf(AccountConfirmMailMessage.class);
-        assertThat(mail.getSubject()).isEqualTo(user.getEmail());
+        assertThat(mail.getRecipient()).isEqualTo(user.getEmail());
     }
 
     @Test
