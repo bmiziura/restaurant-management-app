@@ -46,6 +46,23 @@ services:
       - no-new-privileges:true
     cap_drop:
       - NET_RAW
+  mailcatcher:
+    container_name: restaurant-mailcatcher
+    restart: always
+    hostname: mailcatcher
+    image: dockage/mailcatcher:0.9.0
+    expose:
+      - "1025"
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+    networks:
+      - restaurant-app
+    privileged: false
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - NET_RAW
 
 networks:
   restaurant-app:

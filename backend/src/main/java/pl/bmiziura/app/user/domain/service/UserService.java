@@ -1,5 +1,7 @@
 package pl.bmiziura.app.user.domain.service;
 
+import freemarker.template.TemplateException;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,11 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
+import pl.bmiziura.app.mail.EmailService;
+import pl.bmiziura.app.mail.messages.AccountConfirmMailMessage;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 import pl.bmiziura.app.user.domain.model.UserRole;
 
+import java.io.IOException;
 import java.util.Set;
 
 @Service
@@ -22,6 +27,7 @@ public class UserService implements UserDetailsService {
     private final UserAccountMapper userAccountMapper;
 
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public UserAccount getUser(long id) {
         return userAccountMapper.toUserAccount(getAccountEntity(id));
@@ -55,7 +61,17 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(password));
         user.setRoles(Set.of(UserRole.USER));
 
-        userAccountRepository.save(user);
+        user = userAccountRepository.save(user);
+
+        try {
+            emailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

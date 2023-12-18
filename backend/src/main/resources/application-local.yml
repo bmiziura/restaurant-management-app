@@ -4,3 +4,5 @@ spring:
       on-profile: "local"
   datasource:
     url: jdbc:postgresql://localhost:5438/restaurant
+  mail:
+    host: localhost
