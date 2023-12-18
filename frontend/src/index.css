@@ -71,6 +71,12 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground text-slate-800 bg-slate-50 font-roboto;
+  }
+}
+
+@layer components {
+  .container {
+    @apply px-2 max-w-6xl mx-auto;
   }
 }
