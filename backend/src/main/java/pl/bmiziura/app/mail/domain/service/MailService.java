@@ -1,4 +1,4 @@
-package pl.bmiziura.app.mail;
+package pl.bmiziura.app.mail.domain.service;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -7,14 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import pl.bmiziura.app.mail.messages.MailMessage;
+import pl.bmiziura.app.mail.domain.model.MailMessage;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
 @Component
 @RequiredArgsConstructor
-public class EmailService {
+public class MailService {
     private final Configuration configuration;
     private final JavaMailSender mailSender;
 

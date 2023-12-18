@@ -10,8 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
-import pl.bmiziura.app.mail.EmailService;
-import pl.bmiziura.app.mail.messages.AccountConfirmMailMessage;
+import pl.bmiziura.app.mail.domain.model.AccountConfirmMailMessage;
+import pl.bmiziura.app.mail.domain.service.MailService;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
@@ -27,7 +27,7 @@ public class UserService implements UserDetailsService {
     private final UserAccountMapper userAccountMapper;
 
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final MailService mailService;
 
     public UserAccount getUser(long id) {
         return userAccountMapper.toUserAccount(getAccountEntity(id));
@@ -64,7 +64,7 @@ public class UserService implements UserDetailsService {
         user = userAccountRepository.save(user);
 
         try {
-            emailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
+            mailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

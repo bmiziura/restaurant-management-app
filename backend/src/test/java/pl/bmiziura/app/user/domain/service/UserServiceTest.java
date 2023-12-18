@@ -12,9 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
-import pl.bmiziura.app.mail.EmailService;
-import pl.bmiziura.app.mail.messages.AccountConfirmMailMessage;
-import pl.bmiziura.app.mail.messages.MailMessage;
+import pl.bmiziura.app.mail.domain.model.AccountConfirmMailMessage;
+import pl.bmiziura.app.mail.domain.model.MailMessage;
+import pl.bmiziura.app.mail.domain.service.MailService;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
@@ -42,7 +42,7 @@ class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private EmailService emailService;
+    private MailService mailService;
 
     private UserService underTest;
 
@@ -52,7 +52,7 @@ class UserServiceTest {
                 userAccountRepository,
                 userAccountMapper,
                 passwordEncoder,
-                emailService
+                mailService
         ));
     }
 
@@ -209,7 +209,7 @@ class UserServiceTest {
         verify(userAccountRepository).save(userArgument.capture());
 
         ArgumentCaptor<MailMessage> mailCaptor = ArgumentCaptor.forClass(MailMessage.class);
-        verify(emailService).sendMail(mailCaptor.capture());
+        verify(mailService).sendMail(mailCaptor.capture());
 
         var user = userArgument.getValue();
         var mail = mailCaptor.getValue();

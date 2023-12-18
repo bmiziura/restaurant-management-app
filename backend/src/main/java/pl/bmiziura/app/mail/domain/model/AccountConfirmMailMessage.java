@@ -1,4 +1,4 @@
-package pl.bmiziura.app.mail.messages;
+package pl.bmiziura.app.mail.domain.model;
 
 import pl.bmiziura.app.user.domain.model.UserAccount;
 
