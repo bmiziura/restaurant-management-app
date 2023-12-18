@@ -1,0 +1,6 @@
+spring:
+  config:
+    activate:
+      on-profile: "local"
+  datasource:
+    url: jdbc:postgresql://localhost:5438/restaurant
