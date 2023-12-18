@@ -1,5 +1,7 @@
 package pl.bmiziura.app.user.domain.service;
 
+import freemarker.template.TemplateException;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,11 +12,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
+import pl.bmiziura.app.mail.EmailService;
+import pl.bmiziura.app.mail.messages.AccountConfirmMailMessage;
+import pl.bmiziura.app.mail.messages.MailMessage;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 import pl.bmiziura.app.user.domain.model.UserRole;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,6 +41,8 @@ class UserServiceTest {
     private UserAccountMapper userAccountMapper;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private EmailService emailService;
 
     private UserService underTest;
 
@@ -43,7 +51,8 @@ class UserServiceTest {
         underTest = spy(new UserService(
                 userAccountRepository,
                 userAccountMapper,
-                passwordEncoder
+                passwordEncoder,
+                emailService
         ));
     }
 
@@ -169,7 +178,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldCreateUser() {
+    void shouldCreateUser() throws MessagingException, TemplateException, IOException {
         // given
         var encodedPassword = "encodedPassword";
 
@@ -189,12 +198,18 @@ class UserServiceTest {
         ArgumentCaptor<UserAccountEntity> userArgument = ArgumentCaptor.forClass(UserAccountEntity.class);
         verify(userAccountRepository).save(userArgument.capture());
 
+        ArgumentCaptor<MailMessage> mailCaptor = ArgumentCaptor.forClass(MailMessage.class);
+        verify(emailService).sendMail(mailCaptor.capture());
+
         var user = userArgument.getValue();
+        var mail = mailCaptor.getValue();
         assertThat(user).isNotNull();
         assertThat(user.getEmail()).isEqualTo(USER_EMAIL);
         assertThat(user.getPassword()).isEqualTo(encodedPassword);
         assertThat(user.getRoles().size()).isEqualTo(1);
         assertThat(user.getRoles().contains(UserRole.USER)).isTrue();
+        assertThat(mail).isInstanceOf(AccountConfirmMailMessage.class);
+        assertThat(mail.getSubject()).isEqualTo(user.getEmail());
     }
 
     @Test
