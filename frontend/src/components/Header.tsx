@@ -5,7 +5,7 @@ function Header() {
     <header className="h-20 container flex justify-between items-center">
       <h1>Restaurant Management</h1>
       <nav className="flex gap-x-4">
-        <ul className="text-lg gap-x-4 items-center hidden md:flex">
+        <ul className="gap-x-4 items-center hidden md:flex">
           <li>Cennik</li>
           <li>Opinie</li>
           <li>O nas</li>
