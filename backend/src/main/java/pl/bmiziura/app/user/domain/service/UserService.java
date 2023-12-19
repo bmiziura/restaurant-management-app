@@ -10,8 +10,8 @@ import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
 import pl.bmiziura.app.exception.impl.RegisterEmailTakenException;
 import pl.bmiziura.app.exception.impl.UserNotFoundException;
-import pl.bmiziura.app.mail.domain.model.AccountConfirmMailMessage;
-import pl.bmiziura.app.mail.domain.service.MailService;
+import pl.bmiziura.app.mail.EmailService;
+import pl.bmiziura.app.mail.messages.AccountConfirmMailMessage;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
     private final UserAccountMapper userAccountMapper;
 
     private final PasswordEncoder passwordEncoder;
-    private final MailService mailService;
+    private final EmailService emailService;
 
     public UserAccount getUser(long id) {
         return userAccountMapper.toUserAccount(getAccountEntity(id));
@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService {
         user = userAccountRepository.save(user);
 
         try {
-            mailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
+            emailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
         } catch (Exception e) {
             e.printStackTrace();
         }
