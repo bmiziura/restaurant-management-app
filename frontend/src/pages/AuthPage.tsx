@@ -15,7 +15,7 @@ function AuthPage() {
   if (isLoading) return <></>
   return (
     <>
-      <div className="container text-center max-w-xs md:py-64">
+      <div className="container text-center max-w-xs py-16 md:py-64">
         <form onSubmit={handleLogin}>
           <h2 className="text-2xl mb-4">Zaloguj się</h2>
           <div className="relative mt-6">
