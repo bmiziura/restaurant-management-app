@@ -1,7 +1,5 @@
 package pl.bmiziura.app.user.domain.service;
 
-import freemarker.template.TemplateException;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,14 +8,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
-import pl.bmiziura.app.mail.EmailService;
-import pl.bmiziura.app.mail.messages.AccountConfirmMailMessage;
+import pl.bmiziura.app.exception.impl.RegisterEmailTakenException;
+import pl.bmiziura.app.exception.impl.UserNotFoundException;
+import pl.bmiziura.app.mail.domain.model.AccountConfirmMailMessage;
+import pl.bmiziura.app.mail.domain.service.MailService;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 import pl.bmiziura.app.user.domain.model.UserRole;
 
-import java.io.IOException;
 import java.util.Set;
 
 @Service
@@ -27,7 +26,7 @@ public class UserService implements UserDetailsService {
     private final UserAccountMapper userAccountMapper;
 
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final MailService mailService;
 
     public UserAccount getUser(long id) {
         return userAccountMapper.toUserAccount(getAccountEntity(id));
@@ -39,12 +38,12 @@ public class UserService implements UserDetailsService {
 
     public UserAccountEntity getAccountEntity(long id) {
         return userAccountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found!")); // todo add custom exception
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public UserAccountEntity getAccountEntity(String email) {
         return userAccountRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found!")); // todo add custom exception
+                .orElseThrow(() -> new UserNotFoundException(email));
     }
 
     public boolean userExists(String email) {
@@ -53,7 +52,7 @@ public class UserService implements UserDetailsService {
 
     public void createUser(String email, String password) {
         if (userExists(email)) {
-            throw new RuntimeException("Unable to create a new account! This email is already taken!");
+            throw new RegisterEmailTakenException(email);
         }
 
         var user = new UserAccountEntity();
@@ -64,13 +63,9 @@ public class UserService implements UserDetailsService {
         user = userAccountRepository.save(user);
 
         try {
-            emailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (TemplateException e) {
-            throw new RuntimeException(e);
+            mailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
