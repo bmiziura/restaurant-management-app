@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.bmiziura.app.exception.impl.InvalidPasswordException;
 import pl.bmiziura.app.infrastructure.config.security.providers.CookieProvider;
 import pl.bmiziura.app.user.endpoint.mapper.AuthRequestMapper;
 import pl.bmiziura.app.user.endpoint.mapper.AuthResponseMapper;
@@ -25,7 +26,7 @@ public class UserAuthService {
         var user = userService.getUser(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Passwords doesn't match"); //todo change to custom exception after adding an exception handler
+            throw new InvalidPasswordException(request.getEmail());
         }
 
         return cookieProvider.createRefreshCookie(user);
