@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import useAuth from "@/context/AuthContext"
 import { Link } from "react-router-dom"
 
-function AuthPage() {
+function LoginPage() {
   const { isLoading, user, loginUser, logoutUser, registerUser } = useAuth()
   const handleLogin = async (event: any) => {
     event.preventDefault()
@@ -28,7 +28,7 @@ function AuthPage() {
             />
             <label
               htmlFor="email"
-              className="transition-all absolute p-2 top-0 left-0 z-10 peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
+              className="transition-all absolute p-2 top-0 left-0 z-10 select-none peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
             >
               Email
             </label>
@@ -43,7 +43,7 @@ function AuthPage() {
             />
             <label
               htmlFor="password"
-              className="transition-all absolute p-2 top-0 left-0 z-10 peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
+              className="transition-all absolute p-2 top-0 left-0 z-10 select-none peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
             >
               Hasło
             </label>
@@ -63,4 +63,4 @@ function AuthPage() {
   )
 }
 
-export default AuthPage
+export default LoginPage
