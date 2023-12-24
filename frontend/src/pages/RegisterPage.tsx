@@ -14,12 +14,20 @@ function RegisterPage() {
 
   const handleRegister = async (event: any) => {
     event.preventDefault()
-    if (event.target[1].value === event.target[2].value) {
-      await registerUser(event.target[0].value, event.target[1].value)
+    if (event.target[1].value.length >= 8) {
+      if (event.target[1].value === event.target[2].value) {
+        setError({})
+        await registerUser(event.target[0].value, event.target[1].value)
+      } else {
+        setError({
+          id: 1,
+          message: "Hasła nie są takie same",
+        })
+      }
     } else {
       setError({
-        id: 3,
-        message: "Podane hasła nie są takie same",
+        id: 2,
+        message: "Hasło musi mieć 8 znaków",
       })
     }
   }
@@ -35,7 +43,8 @@ function RegisterPage() {
               id="email"
               name="email"
               placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-500"
+              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300"
+              required
             />
             <label
               htmlFor="email"
@@ -50,7 +59,11 @@ function RegisterPage() {
               id="password"
               name="password"
               placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-500"
+              className={
+                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 " +
+                (error.id === 1 || error.id === 2 ? "border-red-300" : "")
+              }
+              required
             />
             <label
               htmlFor="password"
@@ -58,6 +71,15 @@ function RegisterPage() {
             >
               Hasło
             </label>
+            <p
+              id="password-error"
+              className={
+                "absolute p-2 -top-8 right-0 z-10 text-sm text-red-500 " +
+                (error.id === 1 || error.id === 2 ? "" : "hidden")
+              }
+            >
+              {error.message}
+            </p>
           </div>
           <div className="relative mt-6 py-6">
             <input
@@ -65,7 +87,11 @@ function RegisterPage() {
               id="repeat-password"
               name="repeat-password"
               placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-500"
+              className={
+                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 " +
+                (error?.id === 1 ? "border-red-300" : "")
+              }
+              required
             />
             <label
               htmlFor="repeat-password"
@@ -73,6 +99,15 @@ function RegisterPage() {
             >
               Powtórz hasło
             </label>
+            <p
+              id="password-error"
+              className={
+                "absolute p-2 -top-8 right-0 z-10 text-sm text-red-500 " +
+                (error.id === 1 ? "" : "hidden")
+              }
+            >
+              {error.message}
+            </p>
           </div>
           <Button type="submit" className="mt-6">
             Zarejestruj się

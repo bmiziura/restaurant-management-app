@@ -3,14 +3,10 @@ import useAuth from "@/context/AuthContext"
 import { Link } from "react-router-dom"
 
 function LoginPage() {
-  const { isLoading, user, loginUser, logoutUser, registerUser } = useAuth()
+  const { isLoading, loginUser } = useAuth()
   const handleLogin = async (event: any) => {
     event.preventDefault()
     await loginUser(event.target[0].value, event.target[1].value)
-  }
-  const handleRegister = async (event: any) => {
-    event.preventDefault()
-    await registerUser(event.target[0].value, event.target[1].value)
   }
   if (isLoading) return <></>
   return (
@@ -24,7 +20,8 @@ function LoginPage() {
               id="email"
               name="email"
               placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-500"
+              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300"
+              required
             />
             <label
               htmlFor="email"
@@ -39,7 +36,8 @@ function LoginPage() {
               id="password"
               name="password"
               placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-500"
+              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300"
+              required
             />
             <label
               htmlFor="password"
