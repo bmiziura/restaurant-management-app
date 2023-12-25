@@ -72,7 +72,6 @@ function RegisterPage() {
               Hasło
             </label>
             <p
-              id="password-error"
               className={
                 "absolute p-2 -top-8 right-0 z-10 text-sm text-red-500 " +
                 (error.id === 1 || error.id === 2 ? "" : "hidden")
@@ -100,7 +99,6 @@ function RegisterPage() {
               Powtórz hasło
             </label>
             <p
-              id="password-error"
               className={
                 "absolute p-2 -top-8 right-0 z-10 text-sm text-red-500 " +
                 (error.id === 1 ? "" : "hidden")
