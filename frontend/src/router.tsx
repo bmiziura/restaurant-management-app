@@ -1,6 +1,8 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import HomePage, { HomePageLayout } from "./pages/HomePage"
-import AuthPage from "./pages/AuthPage"
+import LoginPage from "./pages/LoginPage"
+import RegisterPage from "./pages/RegisterPage"
+import useAuth from "./context/AuthContext"
 
 const router = createBrowserRouter([
   {
@@ -8,11 +10,18 @@ const router = createBrowserRouter([
     element: <HomePageLayout />,
     children: [
       { path: "/", element: <HomePage /> },
-      { path: "/login", element: <AuthPage /> },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/register", element: <RegisterPage /> },
     ],
   },
 ])
 
 export default function BrowserRouterProvider() {
+  const { isLoading } = useAuth()
+
+  if (isLoading) {
+    return <></>
+  }
+
   return <RouterProvider router={router} />
 }

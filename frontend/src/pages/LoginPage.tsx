@@ -2,17 +2,14 @@ import { Button } from "@/components/ui/button"
 import useAuth from "@/context/AuthContext"
 import { Link } from "react-router-dom"
 
-function AuthPage() {
-  const { isLoading, user, loginUser, logoutUser, registerUser } = useAuth()
+function LoginPage() {
+  const { loginUser } = useAuth()
+
   const handleLogin = async (event: any) => {
     event.preventDefault()
     await loginUser(event.target[0].value, event.target[1].value)
   }
-  const handleRegister = async (event: any) => {
-    event.preventDefault()
-    await registerUser(event.target[0].value, event.target[1].value)
-  }
-  if (isLoading) return <></>
+
   return (
     <>
       <div className="container text-center max-w-xs py-16 md:py-64">
@@ -24,11 +21,12 @@ function AuthPage() {
               id="email"
               name="email"
               placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-500"
+              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300"
+              required
             />
             <label
               htmlFor="email"
-              className="transition-all absolute p-2 top-0 left-0 z-10 peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
+              className="transition-all absolute p-2 top-0 left-0 z-10 select-none peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
             >
               Email
             </label>
@@ -39,11 +37,12 @@ function AuthPage() {
               id="password"
               name="password"
               placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-500"
+              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300"
+              required
             />
             <label
               htmlFor="password"
-              className="transition-all absolute p-2 top-0 left-0 z-10 peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
+              className="transition-all absolute p-2 top-0 left-0 z-10 select-none peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
             >
               Hasło
             </label>
@@ -63,4 +62,4 @@ function AuthPage() {
   )
 }
 
-export default AuthPage
+export default LoginPage
