@@ -10,7 +10,7 @@ export type Error = {
 }
 
 function RegisterPage() {
-  const { isLoading, registerUser } = useAuth()
+  const { registerUser } = useAuth()
   const [error, setError] = useState<Error | null>(null)
 
   const handleRegister = async (event: any) => {
@@ -38,7 +38,7 @@ function RegisterPage() {
     setError(null)
     await registerUser(email, password)
   }
-  if (isLoading) return <></>
+
   return (
     <>
       <div className="container text-center max-w-xs py-16 md:py-64">

@@ -3,12 +3,13 @@ import useAuth from "@/context/AuthContext"
 import { Link } from "react-router-dom"
 
 function LoginPage() {
-  const { isLoading, loginUser } = useAuth()
+  const { loginUser } = useAuth()
+
   const handleLogin = async (event: any) => {
     event.preventDefault()
     await loginUser(event.target[0].value, event.target[1].value)
   }
-  if (isLoading) return <></>
+
   return (
     <>
       <div className="container text-center max-w-xs py-16 md:py-64">
