@@ -67,7 +67,7 @@ function RegisterPage() {
               name="password"
               placeholder=""
               className={cn(
-                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 ",
+                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300",
                 error && "border-red-300"
               )}
               required
@@ -91,7 +91,7 @@ function RegisterPage() {
               name="repeat-password"
               placeholder=""
               className={cn(
-                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 ",
+                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300",
                 error?.type === "NO_MATCH" && "border-red-300"
               )}
               required
