@@ -2,34 +2,41 @@ import { Button } from "@/components/ui/button"
 import useAuth from "@/context/AuthContext"
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { cn } from "@/lib/utils"
 
 export type Error = {
-  id?: number
-  message?: string
+  type: "NO_MATCH" | "MIN_LENGTH"
+  message: string
 }
 
 function RegisterPage() {
   const { isLoading, registerUser } = useAuth()
-  const [error, setError] = useState<Error>({})
+  const [error, setError] = useState<Error | null>(null)
 
   const handleRegister = async (event: any) => {
     event.preventDefault()
-    if (event.target[1].value.length >= 8) {
-      if (event.target[1].value === event.target[2].value) {
-        setError({})
-        await registerUser(event.target[0].value, event.target[1].value)
-      } else {
-        setError({
-          id: 1,
-          message: "Hasła nie są takie same",
-        })
-      }
-    } else {
+    const email = event.target[0].value
+    const password = event.target[1].value
+    const confirmPassword = event.target[2].value
+
+    if (password.length < 8) {
       setError({
-        id: 2,
+        type: "MIN_LENGTH",
         message: "Hasło musi mieć 8 znaków",
       })
+      return
     }
+
+    if (password !== confirmPassword) {
+      setError({
+        type: "NO_MATCH",
+        message: "Hasła nie są takie same",
+      })
+      return
+    }
+
+    setError(null)
+    await registerUser(email, password)
   }
   if (isLoading) return <></>
   return (
@@ -59,10 +66,10 @@ function RegisterPage() {
               id="password"
               name="password"
               placeholder=""
-              className={
-                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 " +
-                (error.id === 1 || error.id === 2 ? "border-red-300" : "")
-              }
+              className={cn(
+                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 ",
+                error && "border-red-300"
+              )}
               required
             />
             <label
@@ -71,14 +78,11 @@ function RegisterPage() {
             >
               Hasło
             </label>
-            <p
-              className={
-                "absolute p-2 -top-8 right-0 z-10 text-sm text-red-500 " +
-                (error.id === 1 || error.id === 2 ? "" : "hidden")
-              }
-            >
-              {error.message}
-            </p>
+            {error && (
+              <p className="absolute p-2 -top-8 right-0 z-10 text-sm text-red-500">
+                {error.message}
+              </p>
+            )}
           </div>
           <div className="relative mt-6 py-6">
             <input
@@ -86,10 +90,10 @@ function RegisterPage() {
               id="repeat-password"
               name="repeat-password"
               placeholder=""
-              className={
-                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 " +
-                (error?.id === 1 ? "border-red-300" : "")
-              }
+              className={cn(
+                "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300 ",
+                error?.type === "NO_MATCH" && "border-red-300"
+              )}
               required
             />
             <label
@@ -98,14 +102,11 @@ function RegisterPage() {
             >
               Powtórz hasło
             </label>
-            <p
-              className={
-                "absolute p-2 -top-8 right-0 z-10 text-sm text-red-500 " +
-                (error.id === 1 ? "" : "hidden")
-              }
-            >
-              {error.message}
-            </p>
+            {error?.type === "NO_MATCH" && (
+              <p className="absolute p-2 -top-8 right-0 z-10 text-sm text-red-500">
+                {error.message}
+              </p>
+            )}
           </div>
           <Button type="submit" className="mt-6">
             Zarejestruj się
