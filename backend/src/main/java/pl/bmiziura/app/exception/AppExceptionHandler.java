@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.bmiziura.app.exception.impl.AppException;
+import pl.bmiziura.app.exception.impl.MailTokenNotFoundException;
 import pl.bmiziura.app.exception.impl.UserNotFoundException;
 
 import java.util.Locale;
@@ -25,11 +26,11 @@ public class AppExceptionHandler {
         var message = getMessage(exception, locale);
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(exception.getHttpStatus() == null ? HttpStatus.BAD_REQUEST : exception.getHttpStatus())
                 .body(new ErrorResponse(message));
     }
 
-    @ExceptionHandler({UserNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, MailTokenNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundException(AppException exception, Locale locale) {
         logError(exception);
 

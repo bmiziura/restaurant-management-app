@@ -1,13 +1,23 @@
 package pl.bmiziura.app.construction.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import pl.bmiziura.app.construction.model.MailTokenType;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "mail_tokens")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MailTokenEntity {
     private static final String SEQUENCE_NAME = "mail_tokens_id_seq";
 
@@ -21,6 +31,7 @@ public class MailTokenEntity {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private MailTokenType type;
 
     @Column(name = "create_time")

@@ -8,8 +8,12 @@
     <title>Spring Boot Email using FreeMarker</title>
 </head>
 <body>
+<img src="assets/logo.png" alt="logo"/>
 <div style="margin-top: 10px">Greetings, ${user.email}</div>
 <div>Your email is <b>${user.email}</b></div>
+<br/>
+<div>To activate an account <a href="http://localhost:3000/activate-user?userId=${user.id}&token=${token.token}">click
+        here</a></div>
 <br/>
 <div> Have a nice day..!</div>
 </body>

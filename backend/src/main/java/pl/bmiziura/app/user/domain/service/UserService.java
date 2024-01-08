@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.bmiziura.app.construction.model.MailTokenType;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
 import pl.bmiziura.app.exception.impl.RegisterEmailTakenException;
@@ -30,6 +31,8 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
+
+    private final MailTokenService mailTokenService;
 
     public UserAccount getUser(long id) {
         return userAccountMapper.toUserAccount(getAccountEntity(id));
@@ -65,13 +68,11 @@ public class UserService implements UserDetailsService {
 
         user = userAccountRepository.save(user);
 
+        var token = mailTokenService.createToken(user, MailTokenType.ACCOUNT_CONFIRMATION);
+
         try {
-            mailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId())));
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (TemplateException e) {
+            mailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId()), token));
+        } catch (MessagingException | IOException | TemplateException e) {
             throw new RuntimeException(e);
         }
     }
