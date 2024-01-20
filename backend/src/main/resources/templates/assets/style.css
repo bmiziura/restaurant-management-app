@@ -8,6 +8,8 @@ body {
 
 .container {
     padding: 10px 10px;
+    max-width: 750px;
+    margin: 0 auto;
 }
 
 img {
