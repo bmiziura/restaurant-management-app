@@ -43,6 +43,8 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private MailService mailService;
+    @Mock
+    private MailTokenService mailTokenService;
 
     private UserService underTest;
 
@@ -52,7 +54,8 @@ class UserServiceTest {
                 userAccountRepository,
                 userAccountMapper,
                 passwordEncoder,
-                mailService
+                mailService,
+                mailTokenService
         ));
     }
 
@@ -219,7 +222,7 @@ class UserServiceTest {
         assertThat(user.getRoles().size()).isEqualTo(1);
         assertThat(user.getRoles().contains(UserRole.USER)).isTrue();
         assertThat(mail).isInstanceOf(AccountConfirmMail.class);
-        assertThat(mail.getRecipient()).isEqualTo(user.getEmail());
+        assertThat(mail.getRecipients()).isEqualTo(Set.of(user.getEmail()));
     }
 
     @Test
