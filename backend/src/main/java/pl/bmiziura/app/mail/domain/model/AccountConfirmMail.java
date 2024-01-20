@@ -1,18 +1,23 @@
 package pl.bmiziura.app.mail.domain.model;
 
+import org.springframework.core.io.Resource;
 import pl.bmiziura.app.construction.model.entity.MailTokenEntity;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AccountConfirmMailMessage extends MailMessage {
+public class AccountConfirmMail extends Mail {
 
     private final UserAccount user;
     private final MailTokenEntity token;
 
-    public AccountConfirmMailMessage(UserAccount user, MailTokenEntity token) {
-        super(user.getEmail(), "Potwierdź konto", "account-created.ftl");
+    public AccountConfirmMail(UserAccount user, MailTokenEntity token, Resource logoFile) {
+        super("account-created.ftl", "Account Confirmation");
+
+        addRecipient(user.getEmail());
+
+        addAttachment("logo.png", logoFile);
 
         this.user = user;
         this.token = token;

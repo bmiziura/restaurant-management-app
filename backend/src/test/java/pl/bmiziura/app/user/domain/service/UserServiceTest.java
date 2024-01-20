@@ -12,8 +12,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
-import pl.bmiziura.app.mail.domain.model.AccountConfirmMailMessage;
-import pl.bmiziura.app.mail.domain.model.MailMessage;
+import pl.bmiziura.app.mail.domain.model.AccountConfirmMail;
+import pl.bmiziura.app.mail.domain.model.Mail;
 import pl.bmiziura.app.mail.domain.service.MailService;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
@@ -208,7 +208,7 @@ class UserServiceTest {
         ArgumentCaptor<UserAccountEntity> userArgument = ArgumentCaptor.forClass(UserAccountEntity.class);
         verify(userAccountRepository).save(userArgument.capture());
 
-        ArgumentCaptor<MailMessage> mailCaptor = ArgumentCaptor.forClass(MailMessage.class);
+        ArgumentCaptor<Mail> mailCaptor = ArgumentCaptor.forClass(Mail.class);
         verify(mailService).sendMail(mailCaptor.capture());
 
         var user = userArgument.getValue();
@@ -218,7 +218,7 @@ class UserServiceTest {
         assertThat(user.getPassword()).isEqualTo(encodedPassword);
         assertThat(user.getRoles().size()).isEqualTo(1);
         assertThat(user.getRoles().contains(UserRole.USER)).isTrue();
-        assertThat(mail).isInstanceOf(AccountConfirmMailMessage.class);
+        assertThat(mail).isInstanceOf(AccountConfirmMail.class);
         assertThat(mail.getRecipient()).isEqualTo(user.getEmail());
     }
 

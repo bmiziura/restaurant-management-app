@@ -3,6 +3,8 @@ package pl.bmiziura.app.user.domain.service;
 import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,7 +15,7 @@ import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
 import pl.bmiziura.app.exception.impl.RegisterEmailTakenException;
 import pl.bmiziura.app.exception.impl.UserNotFoundException;
-import pl.bmiziura.app.mail.domain.model.AccountConfirmMailMessage;
+import pl.bmiziura.app.mail.domain.model.AccountConfirmMail;
 import pl.bmiziura.app.mail.domain.service.MailService;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
@@ -33,6 +35,9 @@ public class UserService implements UserDetailsService {
     private final MailService mailService;
 
     private final MailTokenService mailTokenService;
+
+    @Value("classpath:templates/assets/logo.png")
+    private Resource logoFile;
 
     public UserAccount getUser(long id) {
         return userAccountMapper.toUserAccount(getAccountEntity(id));
@@ -71,7 +76,7 @@ public class UserService implements UserDetailsService {
         var token = mailTokenService.createToken(user, MailTokenType.ACCOUNT_CONFIRMATION);
 
         try {
-            mailService.sendMail(new AccountConfirmMailMessage(getUser(user.getId()), token));
+            mailService.sendMail(new AccountConfirmMail(getUser(user.getId()), token, logoFile));
         } catch (MessagingException | IOException | TemplateException e) {
             throw new RuntimeException(e);
         }
