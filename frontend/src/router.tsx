@@ -1,8 +1,8 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
-import HomePage, { HomePageLayout } from "./pages/HomePage"
-import LoginPage from "./pages/LoginPage"
-import RegisterPage from "./pages/RegisterPage"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import useAuth from "./context/AuthContext"
+import HomePage, { HomePageLayout } from "@/pages/HomePage.tsx"
+import LoginPage from "@/pages/LoginPage.tsx"
+import RegisterPage from "@/pages/RegisterPage.tsx"
 
 const router = createBrowserRouter([
   {
