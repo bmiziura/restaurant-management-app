@@ -37,6 +37,9 @@ public class UserAccountEntity {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "activated")
+    private boolean activated;
+
     @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
     @JoinTable(name = "users_role_mapping", joinColumns = @JoinColumn(name = "user_account_id"))
     @Enumerated(EnumType.STRING)

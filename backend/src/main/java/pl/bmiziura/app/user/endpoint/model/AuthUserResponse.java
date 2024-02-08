@@ -16,4 +16,5 @@ public class AuthUserResponse {
     private String firstName;
     private String lastName;
     private Set<UserRole> roles;
+    private boolean activated;
 }

@@ -47,6 +47,15 @@ public class AuthController {
                 .build();
     }
 
+    @Operation(summary = "Activate a user using token from email")
+    @PostMapping("/activate/{email}/{token}")
+    public ResponseEntity<Void> activateUser(@PathVariable String email, String token) {
+        authService.activateUser(email, token);
+
+        return ResponseEntity.ok().build();
+    }
+
+
     @Operation(summary = "Get user information")
     @GetMapping("/me")
     public ResponseEntity<AuthUserResponse> getUser(@CurrentUser UserAccount user) {

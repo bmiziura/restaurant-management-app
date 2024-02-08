@@ -30,7 +30,11 @@ public class MailTokenService {
 
     public MailTokenEntity getToken(UserAccountEntity user, String token) {
         return tokenRepository.findByUserIdAndTokenNotExpired(user.getId(), token)
-                .orElseThrow(() -> new MailTokenNotFoundException(user.getId(), token));
+                .orElseThrow(() -> new MailTokenNotFoundException(user.getEmail(), token));
+    }
+
+    public void deleteToken(Long id) {
+        tokenRepository.deleteById(id);
     }
 
     private String generateToken() {

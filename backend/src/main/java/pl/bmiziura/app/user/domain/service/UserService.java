@@ -82,6 +82,13 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public void activateAccount(Long id) {
+        var user = getAccountEntity(id);
+        user.setActivated(true);
+
+        userAccountRepository.save(user);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = getUser(email);
