@@ -29,9 +29,10 @@ public class SecurityConfig {
             "/v3/api-docs/**"
     };
 
-    private static final String[] ANONYMOUS_POST_PATHS = {
+    private static final String[] ALL_POST_PATHS = {
             "/api/auth/login",
-            "/api/auth/register"
+            "/api/auth/register",
+            "/api/auth/token/**"
     };
 
     private static final String[] AUTHORIZED_GET_PATHS = {
@@ -52,7 +53,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers(HttpMethod.GET, SWAGGER_PATHS).permitAll();
-            authorize.requestMatchers(HttpMethod.POST, ANONYMOUS_POST_PATHS).anonymous();
+            authorize.requestMatchers(HttpMethod.POST, ALL_POST_PATHS).permitAll();
             authorize.requestMatchers(HttpMethod.GET, AUTHORIZED_GET_PATHS).authenticated();
             authorize.requestMatchers(HttpMethod.POST, AUTHORIZED_POST_PATHS).authenticated();
 

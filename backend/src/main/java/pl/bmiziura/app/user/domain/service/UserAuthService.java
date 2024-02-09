@@ -1,9 +1,13 @@
 package pl.bmiziura.app.user.domain.service;
 
 import lombok.RequiredArgsConstructor;
+
+import org.flywaydb.core.internal.parser.TokenType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import pl.bmiziura.app.construction.model.MailTokenType;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.exception.impl.InvalidPasswordException;
 import pl.bmiziura.app.exception.impl.MailTokenNotFoundException;
@@ -56,5 +60,9 @@ public class UserAuthService {
         mailTokenService.deleteToken(mailToken.getId());
 
         userService.activateAccount(user.getId());
+    }
+
+    public void sendActivateToken(String email) {
+        userService.sendActivateToken(email);
     }
 }

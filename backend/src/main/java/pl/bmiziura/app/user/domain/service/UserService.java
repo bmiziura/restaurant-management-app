@@ -73,13 +73,38 @@ public class UserService implements UserDetailsService {
 
         user = userAccountRepository.save(user);
 
-        var token = mailTokenService.createToken(user, MailTokenType.ACCOUNT_CONFIRMATION);
+        sendActivateToken(user);
+    }
+
+    public void sendActivateToken(UserAccountEntity user) {
+        System.out.println(user);
+        if(user == null) return;
+        if(user.isActivated()) return;
+
+        // var token = mailTokenService.createToken(user, MailTokenType.ACCOUNT_CONFIRMATION);
+        // System.out.println(token);
 
         try {
-            mailService.sendMail(new AccountConfirmMail(getUser(user.getId()), token, logoFile));
-        } catch (MessagingException | IOException | TemplateException e) {
+            System.out.println("sending mail");
+            // mailService.sendMail(new AccountConfirmMail(getUser(user.getId()), token, logoFile));
+            System.out.println("mail sended");
+        } catch (Exception e) {
+            System.out.println(e);
             throw new RuntimeException(e);
         }
+    }
+
+    public void sendActivateToken(String email) {
+        System.out.println("asdasdasd");
+        UserAccountEntity entity = null;
+        try {
+            entity = getAccountEntity(email);
+        } catch(UserNotFoundException ex) {
+
+        }
+        System.out.println("sending activate token "+entity);
+
+        sendActivateToken(entity);
     }
 
     public void activateAccount(Long id) {
