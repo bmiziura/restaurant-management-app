@@ -30,7 +30,9 @@ function LoginPage() {
               Kliknij tutaj
             </Link>
           </p>
-          <Button type="submit">Zaloguj się</Button>
+          <Button type="submit" className="w-full">
+            Zaloguj się
+          </Button>
         </form>
         <p>
           Nie masz konta?{" "}

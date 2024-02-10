@@ -80,7 +80,9 @@ function RegisterPage() {
               )}
             </div>
           </div>
-          <Button type="submit">Zarejestruj się</Button>
+          <Button type="submit" className="w-full">
+            Zarejestruj się
+          </Button>
         </form>
         <p>
           Masz już konto?{" "}
