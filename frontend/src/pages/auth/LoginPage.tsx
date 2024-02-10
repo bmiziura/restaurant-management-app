@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button.tsx"
 import useAuth from "@/context/AuthContext.tsx"
 import { Link, Navigate } from "react-router-dom"
+import { Input } from "@/components/ui/input.tsx"
+import { Button } from "@/components/ui/button.tsx"
 
 function LoginPage() {
   const { user, loginUser } = useAuth()
@@ -16,52 +17,28 @@ function LoginPage() {
 
   return (
     <>
-      <div className="container text-center max-w-xs py-16 md:py-64">
-        <form onSubmit={handleLogin}>
-          <h2 className="text-2xl mb-4">Zaloguj się</h2>
-          <div className="relative mt-6">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300"
-              required
-            />
-            <label
-              htmlFor="email"
-              className="transition-all absolute p-2 top-0 left-0 z-10 select-none peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
-            >
-              Email
-            </label>
+      <section className="section-container flex flex-col items-center gap-6 py-16">
+        <form onSubmit={handleLogin} className="space-y-6 text-center">
+          <h2 className="text-2xl">Zaloguj się</h2>
+          <div className="space-y-7">
+            <Input id="email" type="email" placeholder="Email" required />
+            <Input id="password" type="password" placeholder="Hasło" required />
           </div>
-          <div className="relative mt-24">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder=""
-              className="peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300"
-              required
-            />
-            <label
-              htmlFor="password"
-              className="transition-all absolute p-2 top-0 left-0 z-10 select-none peer-focus:text-sky-500 peer-focus:-top-8 peer-focus:text-sm peer-[:not(:placeholder-shown)]:-top-8 peer-[:not(:placeholder-shown)]:text-sm"
-            >
-              Hasło
-            </label>
-          </div>
-          <Button type="submit" className="mt-[4.5rem]">
-            Zaloguj się
-          </Button>
+          <p className="text-xs">
+            Nie pamiętasz hasła?{" "}
+            <Link to="/password-recovery" className="text-sky-700">
+              Kliknij tutaj
+            </Link>
+          </p>
+          <Button type="submit">Zaloguj się</Button>
         </form>
-        <p className="mt-2">
+        <p>
           Nie masz konta?{" "}
           <Link to="/register" className="text-sky-700">
             Zarejestruj się
           </Link>
         </p>
-      </div>
+      </section>
     </>
   )
 }
