@@ -6,16 +6,15 @@ import {
   useState,
 } from "react"
 
-export type Role = "ADMIN" | "RESTAURANT_OWNER" | "USER"
-
-export type User = {
-  id: number
-  email: string
-  firstName?: string
-  lastName?: string
-  roles: Role[]
-  activated: boolean
-}
+import { User } from "@/api/types.ts"
+import {
+  activateUser,
+  getCurrentUser,
+  loginUser as authLoginUser,
+  registerUser as authRegisterUser,
+  sendActivationEmail,
+  logoutUser as authLogoutUser,
+} from "@/api/auth.ts"
 
 type AuthContextProps = {
   user?: User
@@ -49,15 +48,10 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     setRefetch(false)
 
     async function fetchUser() {
-      const res = await fetch("/api/auth/me", {
-        credentials: "include",
-      })
-
-      if (res.ok) {
-        const user = await res.json()
-
+      try {
+        const user = await getCurrentUser()
         setUser(user)
-      } else {
+      } catch (err: any) {
         setUser(undefined)
       }
 
@@ -68,17 +62,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }, [refetch])
 
   async function loginUser(email: string, password: string) {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    const res = await authLoginUser(email, password)
 
     if (res.ok) {
       setRefetch(true)
@@ -86,17 +70,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }
 
   async function registerUser(email: string, password: string) {
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    const res = await authRegisterUser(email, password)
 
     if (res.ok) {
       setRefetch(true)
@@ -104,13 +78,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }
 
   async function confirmAccount(email: string, token: string) {
-    const res = await fetch(
-      `/api/auth/token/activate?email=${email}&token=${token}`,
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    )
+    const res = await activateUser(email, token)
 
     if (res.ok) {
       setRefetch(true)
@@ -120,10 +88,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }
 
   async function retryConfirmationEmail() {
-    const res = await fetch(`/api/auth/token/retry`, {
-      method: "POST",
-      credentials: "include",
-    })
+    const res = await sendActivationEmail()
 
     if (!res.ok) {
       switch (res.status) {
@@ -140,10 +105,7 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   }
 
   async function logoutUser() {
-    const res = await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    })
+    const res = await authLogoutUser()
 
     if (res.ok) {
       setRefetch(true)
