@@ -12,6 +12,7 @@ function ConfirmAccountPage() {
 
   const [isRetrying, setRetry] = useState(false)
   const [retryError, setRetryError] = useState("")
+  const [isRetryingSuccess, setRetrySuccess] = useState(false)
 
   const [searchParams] = useSearchParams()
 
@@ -38,9 +39,14 @@ function ConfirmAccountPage() {
   const handleRetry = async () => {
     setRetry(true)
 
+    setError("")
+    setRetrySuccess(false)
+
     try {
       await retryConfirmationEmail()
+      setRetrySuccess(true)
     } catch (err: any) {
+      setRetrySuccess(false)
       setRetryError(err.message)
     }
 
@@ -68,6 +74,12 @@ function ConfirmAccountPage() {
         </p>
         <div className="flex items-center flex-col text-center gap-2">
           {retryError && <p className="text-sm text-red-700">{retryError}</p>}
+
+          {isRetryingSuccess && (
+            <p className="text-sm">
+              Pomyślnie wysłano wiadomość na email: {user?.email}
+            </p>
+          )}
 
           <div className="flex gap-4 flex-col md:flex-row">
             <Button
@@ -109,6 +121,12 @@ function ConfirmAccountPage() {
       </p>
       <div className="flex items-center flex-col text-center gap-2">
         {retryError && <p className="text-sm text-red-700">{retryError}</p>}
+
+        {isRetryingSuccess && (
+          <p className="text-sm">
+            Pomyślnie wysłano wiadomość na email: {user?.email}
+          </p>
+        )}
         <Button
           onClick={handleRetry}
           disabled={isRetrying}
