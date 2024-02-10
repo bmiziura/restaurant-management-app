@@ -24,7 +24,7 @@ function LoginPage() {
             <Input id="email" type="email" placeholder="Email" required />
             <Input id="password" type="password" placeholder="Hasło" required />
           </div>
-          <p className="text-xs">
+          <p className="text-sm">
             Nie pamiętasz hasła?{" "}
             <Link to="/password-recovery" className="text-sky-700">
               Kliknij tutaj
