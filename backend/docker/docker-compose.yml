@@ -14,6 +14,8 @@ services:
       - POSTGRES_DB=restaurant
       - POSTGRES_USER=restaurant
       - POSTGRES_PASSWORD=restaurant
+      - TZ=GMT+1
+      - PGTZ=GMT+1
     volumes:
       - restaurant_pgsql_data:/var/lib/postgresql/data
     networks:

@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import pl.bmiziura.app.construction.model.MailTokenStatus;
 import pl.bmiziura.app.construction.model.MailTokenType;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,11 @@ public class MailTokenEntity {
 
     @Column(name = "expire_time")
     private LocalDateTime expireTime;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private MailTokenStatus status = MailTokenStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")

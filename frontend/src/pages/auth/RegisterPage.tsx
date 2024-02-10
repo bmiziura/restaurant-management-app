@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button"
-import useAuth from "@/context/AuthContext"
+import { Button } from "@/components/ui/button.tsx"
+import useAuth from "@/context/AuthContext.tsx"
 import { useState } from "react"
-import { Link } from "react-router-dom"
-import { cn } from "@/lib/utils"
+import { Link, Navigate } from "react-router-dom"
+import { cn } from "@/lib/utils.ts"
 
 export type Error = {
   type: "NO_MATCH" | "MIN_LENGTH"
@@ -10,8 +10,12 @@ export type Error = {
 }
 
 function RegisterPage() {
-  const { registerUser } = useAuth()
+  const { user, registerUser } = useAuth()
   const [error, setError] = useState<Error | null>(null)
+
+  if (user) {
+    return <Navigate to="/dashboard" />
+  }
 
   const handleRegister = async (event: any) => {
     event.preventDefault()
@@ -36,7 +40,7 @@ function RegisterPage() {
     }
 
     setError(null)
-    await registerUser(email, password)
+    registerUser(email, password)
   }
 
   return (
@@ -68,7 +72,7 @@ function RegisterPage() {
               placeholder=""
               className={cn(
                 "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300",
-                error && "border-red-300"
+                error && "border-red-300",
               )}
               required
             />
@@ -92,7 +96,7 @@ function RegisterPage() {
               placeholder=""
               className={cn(
                 "peer absolute top-0 left-0 w-full border-2 rounded-xl p-2 border-slate-100 focus:outline-none focus:border-2 focus:border-sky-300",
-                error?.type === "NO_MATCH" && "border-red-300"
+                error?.type === "NO_MATCH" && "border-red-300",
               )}
               required
             />

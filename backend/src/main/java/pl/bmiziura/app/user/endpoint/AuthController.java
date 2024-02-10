@@ -48,17 +48,17 @@ public class AuthController {
     }
 
     @Operation(summary = "Activate a user using token from email")
-    @PostMapping("/token/{email}/{token}")
-    public ResponseEntity<Void> activateUser(@PathVariable String email, @PathVariable String token) {
+    @PostMapping("/token/activate")
+    public ResponseEntity<Void> activateUser(@RequestParam String email, @RequestParam String token) {
         authService.activateUser(email, token);
 
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Sending another activation token to email")
-    @PostMapping("/token/{email}")
-    public ResponseEntity<Void> resendActivationToken(@PathVariable String email) {
-        authService.sendActivateToken(email);
+    @PostMapping("/token/retry")
+    public ResponseEntity<Void> resendActivationToken(@CurrentUser UserAccount user) {
+        authService.sendActivateToken(user);
 
         return ResponseEntity.ok().build();
     }

@@ -1,0 +1,3 @@
+CREATE TYPE MailTokenStatus AS ENUM ('ACTIVE', 'EXPIRED', 'USED');
+
+ALTER TABLE mail_tokens ADD COLUMN status MailTokenStatus NOT NULL DEFAULT 'ACTIVE';

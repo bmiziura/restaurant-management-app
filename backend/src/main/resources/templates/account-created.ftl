@@ -19,8 +19,8 @@
         <p>Dziękujemy za założenie konta w naszym serwisie.</p>
         <p>
             Kliknij link poniżej, aby potwierdzić konto:<br/>
-            <a href="http://localhost:3000/activate-user?email=${user.email}&token=${token.token}">
-                http://localhost:3000/activate-user?email=${user.email}&token=${token.token}
+            <a href="http://localhost:3000/confirm-account?email=${user.email}&token=${token.token}">
+                http://localhost:3000/confirm-account?email=${user.email}&token=${token.token}
             </a>
         </p>
     </div>

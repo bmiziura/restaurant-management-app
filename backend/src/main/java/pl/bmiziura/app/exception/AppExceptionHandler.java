@@ -30,17 +30,6 @@ public class AppExceptionHandler {
                 .body(new ErrorResponse(message));
     }
 
-    @ExceptionHandler({UserNotFoundException.class, MailTokenNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handleNotFoundException(AppException exception, Locale locale) {
-        logError(exception);
-
-        var message = getMessage(exception, locale);
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(message));
-    }
-
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException exception, Locale locale) {
         logError(exception);

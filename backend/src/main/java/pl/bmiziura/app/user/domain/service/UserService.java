@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service;
 import pl.bmiziura.app.construction.model.MailTokenType;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
+import pl.bmiziura.app.exception.impl.MailTokenLimitException;
 import pl.bmiziura.app.exception.impl.RegisterEmailTakenException;
 import pl.bmiziura.app.exception.impl.UserNotFoundException;
 import pl.bmiziura.app.mail.domain.model.AccountConfirmMail;
 import pl.bmiziura.app.mail.domain.service.MailService;
+import pl.bmiziura.app.user.domain.mapper.UserAccountEntityMapper;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
@@ -30,6 +32,7 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     private final UserAccountRepository userAccountRepository;
     private final UserAccountMapper userAccountMapper;
+    private final UserAccountEntityMapper userAccountEntityMapper;
 
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
@@ -76,35 +79,30 @@ public class UserService implements UserDetailsService {
         sendActivateToken(user);
     }
 
+    public void sendActivateToken(UserAccount user) {
+        sendActivateToken(userAccountEntityMapper.toUserAccountEntity(user));
+    }
+
     public void sendActivateToken(UserAccountEntity user) {
-        System.out.println(user);
         if(user == null) return;
         if(user.isActivated()) return;
 
-        // var token = mailTokenService.createToken(user, MailTokenType.ACCOUNT_CONFIRMATION);
-        // System.out.println(token);
+        validateTokenLimit(user, MailTokenType.ACCOUNT_CONFIRMATION);
+
+        var token = mailTokenService.createToken(user, MailTokenType.ACCOUNT_CONFIRMATION);
 
         try {
-            System.out.println("sending mail");
-            // mailService.sendMail(new AccountConfirmMail(getUser(user.getId()), token, logoFile));
-            System.out.println("mail sended");
+             mailService.sendMail(new AccountConfirmMail(getUser(user.getId()), token, logoFile));
         } catch (Exception e) {
-            System.out.println(e);
             throw new RuntimeException(e);
         }
     }
 
-    public void sendActivateToken(String email) {
-        System.out.println("asdasdasd");
-        UserAccountEntity entity = null;
-        try {
-            entity = getAccountEntity(email);
-        } catch(UserNotFoundException ex) {
-
+    private void validateTokenLimit(UserAccountEntity user, MailTokenType type) {
+        var limit = type.getLimit();
+        if(mailTokenService.getActiveTokenCount(user.getId(), type) >= limit) {
+            throw new MailTokenLimitException(user.getId(), limit);
         }
-        System.out.println("sending activate token "+entity);
-
-        sendActivateToken(entity);
     }
 
     public void activateAccount(Long id) {
@@ -118,6 +116,6 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = getUser(email);
 
-        return new User(user); // todo add try catch after adding custom exception
+        return new User(user);
     }
 }

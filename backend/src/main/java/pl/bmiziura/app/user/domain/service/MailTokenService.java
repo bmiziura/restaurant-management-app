@@ -2,6 +2,7 @@ package pl.bmiziura.app.user.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.bmiziura.app.construction.model.MailTokenStatus;
 import pl.bmiziura.app.construction.model.MailTokenType;
 import pl.bmiziura.app.construction.model.entity.MailTokenEntity;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
@@ -28,16 +29,25 @@ public class MailTokenService {
         return entity;
     }
 
-    public MailTokenEntity getToken(UserAccountEntity user, String token) {
-        return tokenRepository.findByUserIdAndTokenNotExpired(user.getId(), token)
+    public MailTokenEntity getToken(UserAccountEntity user, String token, MailTokenType type) {
+        return tokenRepository.findByUserIdAndTokenNotExpired(user.getId(), token, type)
                 .orElseThrow(() -> new MailTokenNotFoundException(user.getEmail(), token));
     }
 
-    public void deleteToken(Long id) {
-        tokenRepository.deleteById(id);
+    public boolean verifyToken(UserAccountEntity user, String token, MailTokenType type) {
+        var mailToken = getToken(user, token, type);
+
+        mailToken.setStatus(MailTokenStatus.USED);
+        tokenRepository.save(mailToken);
+
+        return true;
     }
 
     private String generateToken() {
         return UUID.randomUUID().toString();
+    }
+
+    public int getActiveTokenCount(Long id, MailTokenType mailTokenType) {
+        return tokenRepository.countAllByUserAndTypeAndTokenNotExpired(id, mailTokenType);
     }
 }

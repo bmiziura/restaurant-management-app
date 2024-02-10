@@ -1,5 +1,7 @@
 CREATE TYPE MailTokenType AS ENUM ('ACCOUNT_CONFIRMATION', 'PASSWORD_CHANGE');
 
+CREATE CAST (varchar AS MailTokenType) WITH INOUT AS IMPLICIT;
+
 CREATE TABLE mail_tokens
 (
     id              bigint PRIMARY KEY,

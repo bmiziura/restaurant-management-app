@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/navigation-menu.tsx"
 import { cn } from "@/lib/utils.ts"
 import useScrollVisibility from "@/hooks/useScrollVisibility.ts"
+import useAuth from "@/context/AuthContext.tsx"
 
 type NavigationLinkChildren = {
   title: string
@@ -73,6 +74,7 @@ const links: NavigationLink[] = [
 ]
 
 const Header = () => {
+  const { user, logoutUser } = useAuth()
   const [isSheetVisible, setSheetVisible] = useState<boolean>(false)
   const { isVisible, setVisible } = useScrollVisibility()
 
@@ -102,15 +104,28 @@ const Header = () => {
           </NavigationMenu>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/login" className="hidden sm:block">
-            <Button variant="outline">Zaloguj</Button>
-          </Link>
-          <Link to="/register" className="hidden sm:block">
-            <Button className="flex items-center gap-2">
-              <span>Wypróbuj</span>
-              <ArrowRightIcon />
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to="/dashboard" className="hidden sm:block">
+                <Button variant="outline">Panel Użytkownika</Button>
+              </Link>
+              <Button className="flex items-center gap-2" onClick={logoutUser}>
+                <span>Wyloguj się</span>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="hidden sm:block">
+                <Button variant="outline">Zaloguj</Button>
+              </Link>
+              <Link to="/register" className="hidden sm:block">
+                <Button className="flex items-center gap-2">
+                  <span>Wypróbuj</span>
+                  <ArrowRightIcon />
+                </Button>
+              </Link>
+            </>
+          )}
           <Sheet open={isSheetVisible} onOpenChange={setSheetVisible}>
             <SheetTrigger asChild>
               <div className="cursor-pointer sm:hidden">

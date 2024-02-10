@@ -11,6 +11,7 @@ import pl.bmiziura.app.construction.model.MailTokenType;
 import pl.bmiziura.app.construction.model.entity.UserAccountEntity;
 import pl.bmiziura.app.exception.impl.InvalidPasswordException;
 import pl.bmiziura.app.exception.impl.MailTokenNotFoundException;
+import pl.bmiziura.app.exception.impl.UserAccountAlreadyActivatedException;
 import pl.bmiziura.app.exception.impl.UserNotFoundException;
 import pl.bmiziura.app.infrastructure.config.security.providers.CookieProvider;
 import pl.bmiziura.app.user.domain.model.UserAccount;
@@ -56,13 +57,16 @@ public class UserAuthService {
             throw new MailTokenNotFoundException(email, token);
         }
 
-        var mailToken = mailTokenService.getToken(user, token);
-        mailTokenService.deleteToken(mailToken.getId());
+        if(user.isActivated()) throw new UserAccountAlreadyActivatedException(email);
 
-        userService.activateAccount(user.getId());
+        if(mailTokenService.verifyToken(user, token, MailTokenType.ACCOUNT_CONFIRMATION)) {
+            userService.activateAccount(user.getId());
+        }
     }
 
-    public void sendActivateToken(String email) {
-        userService.sendActivateToken(email);
+    public void sendActivateToken(UserAccount userAccount) {
+        if(userAccount.isActivated()) throw new UserAccountAlreadyActivatedException(userAccount.getEmail());
+
+        userService.sendActivateToken(userAccount);
     }
 }

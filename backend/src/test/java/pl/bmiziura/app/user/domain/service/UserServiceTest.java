@@ -15,6 +15,7 @@ import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
 import pl.bmiziura.app.mail.domain.model.AccountConfirmMail;
 import pl.bmiziura.app.mail.domain.model.Mail;
 import pl.bmiziura.app.mail.domain.service.MailService;
+import pl.bmiziura.app.user.domain.mapper.UserAccountEntityMapper;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
@@ -40,6 +41,8 @@ class UserServiceTest {
     @Mock
     private UserAccountMapper userAccountMapper;
     @Mock
+    private UserAccountEntityMapper userAccountEntityMapper;
+    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private MailService mailService;
@@ -53,6 +56,7 @@ class UserServiceTest {
         underTest = spy(new UserService(
                 userAccountRepository,
                 userAccountMapper,
+                userAccountEntityMapper,
                 passwordEncoder,
                 mailService,
                 mailTokenService

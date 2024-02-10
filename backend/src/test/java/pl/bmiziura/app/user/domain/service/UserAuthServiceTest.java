@@ -29,6 +29,8 @@ class UserAuthServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
+    private MailTokenService mailTokenService;
+    @Mock
     private AuthResponseMapper authResponseMapper;
     @Mock
     private AuthRequestMapper authRequestMapper;
@@ -42,6 +44,7 @@ class UserAuthServiceTest {
         underTest = spy(new UserAuthService(
                 userService,
                 passwordEncoder,
+                mailTokenService,
                 authResponseMapper,
                 authRequestMapper,
                 cookieProvider

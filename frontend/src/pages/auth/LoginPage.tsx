@@ -1,13 +1,17 @@
-import { Button } from "@/components/ui/button"
-import useAuth from "@/context/AuthContext"
-import { Link } from "react-router-dom"
+import { Button } from "@/components/ui/button.tsx"
+import useAuth from "@/context/AuthContext.tsx"
+import { Link, Navigate } from "react-router-dom"
 
 function LoginPage() {
-  const { loginUser } = useAuth()
+  const { user, loginUser } = useAuth()
+
+  if (user) {
+    return <Navigate to="/dashboard" />
+  }
 
   const handleLogin = async (event: any) => {
     event.preventDefault()
-    await loginUser(event.target[0].value, event.target[1].value)
+    loginUser(event.target[0].value, event.target[1].value)
   }
 
   return (
