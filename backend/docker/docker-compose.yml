@@ -3,7 +3,7 @@ version: "3.7"
 services:
   database:
     container_name: restaurant-postgres
-    restart: always
+    restart: on-failure
     hostname: database
     image: "postgres:12.15-alpine"
     expose:
@@ -34,7 +34,7 @@ services:
     depends_on:
       - database
     container_name: restaurant-backend
-    restart: always
+    restart: on-failure
     environment:
       - TZ=Europe/Warsaw
     expose:
@@ -50,7 +50,7 @@ services:
       - NET_RAW
   mailcatcher:
     container_name: restaurant-mailcatcher
-    restart: always
+    restart: on-failure
     hostname: mailcatcher
     image: axllent/mailpit:latest
     expose:
