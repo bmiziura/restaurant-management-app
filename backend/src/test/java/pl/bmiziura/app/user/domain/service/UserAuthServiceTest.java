@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.bmiziura.app.infrastructure.config.security.providers.CookieProvider;
+import pl.bmiziura.app.mail.domain.service.MailTokenService;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 import pl.bmiziura.app.user.endpoint.mapper.AuthRequestMapper;
 import pl.bmiziura.app.user.endpoint.mapper.AuthResponseMapper;

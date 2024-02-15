@@ -48,17 +48,9 @@ public class AuthController {
     }
 
     @Operation(summary = "Activate a user using token from email")
-    @PostMapping("/token/activate")
+    @PostMapping("/activate")
     public ResponseEntity<Void> activateUser(@RequestParam String email, @RequestParam String token) {
         authService.activateUser(email, token);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "Sending another activation token to email")
-    @PostMapping("/token/retry")
-    public ResponseEntity<Void> resendActivationToken(@CurrentUser UserAccount user) {
-        authService.sendActivateToken(user);
 
         return ResponseEntity.ok().build();
     }

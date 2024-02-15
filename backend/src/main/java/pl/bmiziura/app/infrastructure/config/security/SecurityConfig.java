@@ -32,7 +32,14 @@ public class SecurityConfig {
     private static final String[] ALL_POST_PATHS = {
             "/api/auth/login",
             "/api/auth/register",
-            "/api/auth/token/activate"
+            "/api/auth/token/activate",
+            "/api/recovery/**",
+            "/api/token/**"
+    };
+
+    private static final String[] ALL_GET_PATHS = {
+            "/api/recovery",
+            "/api/token/**"
     };
 
     private static final String[] AUTHORIZED_GET_PATHS = {
@@ -55,6 +62,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers(HttpMethod.GET, SWAGGER_PATHS).permitAll();
             authorize.requestMatchers(HttpMethod.POST, ALL_POST_PATHS).permitAll();
+            authorize.requestMatchers(HttpMethod.GET, ALL_GET_PATHS).permitAll();
             authorize.requestMatchers(HttpMethod.GET, AUTHORIZED_GET_PATHS).authenticated();
             authorize.requestMatchers(HttpMethod.POST, AUTHORIZED_POST_PATHS).authenticated();
 

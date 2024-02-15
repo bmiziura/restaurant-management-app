@@ -15,6 +15,7 @@ import pl.bmiziura.app.construction.model.repository.UserAccountRepository;
 import pl.bmiziura.app.mail.domain.model.AccountConfirmMail;
 import pl.bmiziura.app.mail.domain.model.Mail;
 import pl.bmiziura.app.mail.domain.service.MailService;
+import pl.bmiziura.app.mail.domain.service.MailTokenService;
 import pl.bmiziura.app.user.domain.mapper.UserAccountEntityMapper;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;

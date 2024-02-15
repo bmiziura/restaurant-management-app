@@ -1,8 +1,8 @@
 package pl.bmiziura.app.user.domain.service;
 
-import freemarker.template.TemplateException;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,14 +17,15 @@ import pl.bmiziura.app.exception.impl.MailTokenLimitException;
 import pl.bmiziura.app.exception.impl.RegisterEmailTakenException;
 import pl.bmiziura.app.exception.impl.UserNotFoundException;
 import pl.bmiziura.app.mail.domain.model.AccountConfirmMail;
+import pl.bmiziura.app.mail.domain.model.AccountRecoveryMail;
 import pl.bmiziura.app.mail.domain.service.MailService;
+import pl.bmiziura.app.mail.domain.service.MailTokenService;
 import pl.bmiziura.app.user.domain.mapper.UserAccountEntityMapper;
 import pl.bmiziura.app.user.domain.mapper.UserAccountMapper;
 import pl.bmiziura.app.user.domain.model.User;
 import pl.bmiziura.app.user.domain.model.UserAccount;
 import pl.bmiziura.app.user.domain.model.UserRole;
 
-import java.io.IOException;
 import java.util.Set;
 
 @Service
@@ -32,12 +33,8 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     private final UserAccountRepository userAccountRepository;
     private final UserAccountMapper userAccountMapper;
-    private final UserAccountEntityMapper userAccountEntityMapper;
 
     private final PasswordEncoder passwordEncoder;
-    private final MailService mailService;
-
-    private final MailTokenService mailTokenService;
 
     @Value("classpath:templates/assets/logo.png")
     private Resource logoFile;
@@ -75,34 +72,6 @@ public class UserService implements UserDetailsService {
         user.setRoles(Set.of(UserRole.USER));
 
         user = userAccountRepository.save(user);
-
-        sendActivateToken(user);
-    }
-
-    public void sendActivateToken(UserAccount user) {
-        sendActivateToken(userAccountEntityMapper.toUserAccountEntity(user));
-    }
-
-    public void sendActivateToken(UserAccountEntity user) {
-        if(user == null) return;
-        if(user.isActivated()) return;
-
-        validateTokenLimit(user, MailTokenType.ACCOUNT_CONFIRMATION);
-
-        var token = mailTokenService.createToken(user, MailTokenType.ACCOUNT_CONFIRMATION);
-
-        try {
-             mailService.sendMail(new AccountConfirmMail(getUser(user.getId()), token, logoFile));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void validateTokenLimit(UserAccountEntity user, MailTokenType type) {
-        var limit = type.getLimit();
-        if(mailTokenService.getActiveTokenCount(user.getId(), type) >= limit) {
-            throw new MailTokenLimitException(user.getId(), limit);
-        }
     }
 
     public void activateAccount(Long id) {
@@ -117,5 +86,11 @@ public class UserService implements UserDetailsService {
         var user = getUser(email);
 
         return new User(user);
+    }
+
+    public void changePassword(UserAccountEntity account, String password) {
+        account.setPassword(passwordEncoder.encode(password));
+
+        userAccountRepository.save(account);
     }
 }
