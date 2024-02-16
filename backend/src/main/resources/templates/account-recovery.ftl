@@ -15,7 +15,7 @@
     <#include "header.ftl">
 
     <div class="content">
-        <h1>Odzyskiwanie konto w Restauratorze!</h1>
+        <h1>Odzyskiwanie konta w Restauratorze!</h1>
         <p>
             Kliknij link poniżej, aby zmienić hasło:<br/>
             <a href="http://localhost:3000/password-recovery?email=${user.email}&token=${token.token}">
