@@ -42,13 +42,9 @@ class UserServiceTest {
     @Mock
     private UserAccountMapper userAccountMapper;
     @Mock
-    private UserAccountEntityMapper userAccountEntityMapper;
-    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private MailService mailService;
-    @Mock
-    private MailTokenService mailTokenService;
 
     private UserService underTest;
 
@@ -57,10 +53,7 @@ class UserServiceTest {
         underTest = spy(new UserService(
                 userAccountRepository,
                 userAccountMapper,
-                userAccountEntityMapper,
-                passwordEncoder,
-                mailService,
-                mailTokenService
+                passwordEncoder
         ));
     }
 
