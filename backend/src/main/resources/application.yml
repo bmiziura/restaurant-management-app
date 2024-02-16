@@ -20,9 +20,9 @@ spring:
             enable: true
 
 security:
+  cipher: bmVhcmJ5c2h1dG91dGxpbmVzcG9ydGN1cnJlbnRncmU=
   refresh-token:
     validity-time: 259200
-    secret: secret-refresh123!
   access-token:
     validity-time: 1800
     secret: secret-access123!

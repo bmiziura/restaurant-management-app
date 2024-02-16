@@ -2,6 +2,7 @@ package pl.bmiziura.app.user.endpoint;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -63,12 +64,8 @@ public class AuthController {
 
     @Operation(summary = "Logout user (delete session)")
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.SET_COOKIE, cookieProvider.createRefreshCookie(null).toString())
-                .header(HttpHeaders.SET_COOKIE, cookieProvider.createAccessCookie(null).toString())
-                .build();
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        return authService.logout(request);
     }
 
 

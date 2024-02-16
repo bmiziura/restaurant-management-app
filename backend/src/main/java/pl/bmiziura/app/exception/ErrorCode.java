@@ -11,4 +11,5 @@ public class ErrorCode {
     public static final int MAIL_TOKEN_LIMIT = 2005;
     public static final int EMAIL_SENDER_ERROR = 2006;
     public static final int EMAIL_TOKEN_FORBIDDEN = 2007;
+    public static final int REFRESH_TOKEN_NOT_FOUND_ERROR = 2008;
 }

@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 public class TokenProperties {
     @Value("${security.refresh-token.validity-time}")
     private int refreshValidityTime;
-    @Value("${security.refresh-token.secret}")
-    private String refreshSecret;
 
     @Value("${security.access-token.validity-time}")
     private int accessValidityTime;
