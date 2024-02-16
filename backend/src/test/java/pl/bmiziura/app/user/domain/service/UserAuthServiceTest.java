@@ -32,8 +32,6 @@ class UserAuthServiceTest {
     @Mock
     private MailTokenService mailTokenService;
     @Mock
-    private AuthResponseMapper authResponseMapper;
-    @Mock
     private AuthRequestMapper authRequestMapper;
     @Mock
     private CookieProvider cookieProvider;
@@ -46,7 +44,6 @@ class UserAuthServiceTest {
                 userService,
                 passwordEncoder,
                 mailTokenService,
-                authResponseMapper,
                 authRequestMapper,
                 cookieProvider
         ));
