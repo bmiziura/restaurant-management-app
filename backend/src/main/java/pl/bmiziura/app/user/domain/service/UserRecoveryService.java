@@ -15,6 +15,7 @@ public class UserRecoveryService {
     private final MailTokenService tokenService;
 
     public void changePassword(RecoveryRequest request) {
+        System.out.println(request);
         if(tokenService.useToken(request.getEmail(), request.getToken(), MailTokenType.PASSWORD_CHANGE)) {
             var user = userService.getAccountEntity(request.getEmail());
 

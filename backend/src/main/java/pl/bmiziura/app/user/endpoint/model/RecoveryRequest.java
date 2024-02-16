@@ -1,10 +1,9 @@
 package pl.bmiziura.app.user.endpoint.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecoveryRequest {

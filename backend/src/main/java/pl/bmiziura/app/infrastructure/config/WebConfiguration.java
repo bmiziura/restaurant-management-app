@@ -10,7 +10,6 @@ import pl.bmiziura.app.infrastructure.config.resolver.UserDataResolver;
 import java.util.List;
 
 @Configuration
-@EnableWebMvc
 @RequiredArgsConstructor
 public class WebConfiguration implements WebMvcConfigurer {
     private final UserDataResolver userDataResolver;

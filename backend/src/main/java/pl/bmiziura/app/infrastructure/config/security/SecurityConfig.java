@@ -32,13 +32,12 @@ public class SecurityConfig {
     private static final String[] ALL_POST_PATHS = {
             "/api/auth/login",
             "/api/auth/register",
-            "/api/auth/token/activate",
+            "/api/auth/activate",
             "/api/recovery/**",
             "/api/token/**"
     };
 
     private static final String[] ALL_GET_PATHS = {
-            "/api/recovery",
             "/api/token/**"
     };
 
@@ -47,8 +46,7 @@ public class SecurityConfig {
     };
 
     private static final String[] AUTHORIZED_POST_PATHS = {
-            "/api/auth/logout",
-            "/api/auth/token/retry"
+            "/api/auth/logout"
     };
 
     @Bean
