@@ -7,6 +7,7 @@ import DashboardPage, {
   DashboardPageLayout,
 } from "@/pages/dashboard/DashboardPage.tsx"
 import ConfirmAccountPage from "@/pages/auth/ConfirmAccountPage.tsx"
+import RecoveryPasswordPage from "@/pages/auth/RecoveryPasswordPage.tsx"
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/confirm-account", element: <ConfirmAccountPage /> },
+      { path: "/password-recovery", element: <RecoveryPasswordPage /> },
     ],
   },
   {
